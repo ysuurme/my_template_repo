@@ -47,12 +47,29 @@ def generate_commit_message(diff: str) -> str:
         sys.exit(1)
 
 
+def _commit(message: str) -> None:
+    try:
+        subprocess.run(["git", "commit", "-m", message], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Git commit failed: {e.stderr.strip() if e.stderr else e}")
+        sys.exit(1)
+
+
 def main() -> None:
+    dry_run = "--dry-run" in sys.argv
+
     diff = _staged_diff()
     if not diff:
         print("No staged changes. Stage your changes first with `git add`.")
         sys.exit(1)
-    print(generate_commit_message(diff))
+
+    message = generate_commit_message(diff)
+
+    if dry_run:
+        print(message)
+    else:
+        print(message)
+        _commit(message)
 
 
 if __name__ == "__main__":
