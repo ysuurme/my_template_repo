@@ -27,9 +27,15 @@ def generate_commit_message(diff: str) -> str:
         response = client.models.generate_content(
             model=settings.google_model,
             contents=(
-                "Generate a concise conventional commit message for this diff.\n"
-                "Format: <type>(<scope>): <description>\n"
-                "Return only the commit message, no explanation.\n\n"
+                "Generate a conventional commit message for this diff.\n\n"
+                "Rules:\n"
+                "- Format: <type>(<scope>): <description>\n"
+                "- Types: feat, fix, refactor, test, docs, chore, perf, ci, build, revert\n"
+                "- Scope: the module, file, or area changed (omit if not obvious)\n"
+                "- Description: imperative mood, ≤72 chars, no period at end\n"
+                "- Add a blank line + body only if the change is complex or non-obvious\n"
+                "- If a breaking change, append a footer: BREAKING CHANGE: <explanation>\n"
+                "- Return only the commit message, no explanation, no markdown.\n\n"
                 f"{diff}"
             ),
         )
