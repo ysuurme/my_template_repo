@@ -5,14 +5,14 @@ description = "{{ description }}"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "anthropic>=0.40.0",
+    "google-genai>=0.5.0",
     "pydantic-settings>=2.0.0",
     "fastapi>=0.110.0",
     "uvicorn[standard]>=0.29.0",
 ]
 
 [project.scripts]
-commit-msg = "src.utils.m_commit:main"
+commit-msg = "tools.commit:main"
 
 [dependency-groups]
 dev = [
@@ -26,7 +26,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["src", "tools"]
 
 [tool.ruff]
 line-length = 88
@@ -47,7 +47,7 @@ addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["src/utils/m_commit.py"]
+omit = []
 
 [tool.coverage.report]
 exclude_lines = [

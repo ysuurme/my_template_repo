@@ -31,19 +31,20 @@
 | `src/data/` | Data loading and preprocessing |
 | `src/models/` | Model definitions, training, evaluation |
 | `src/utils/` | Generic transferable modules (`m_*.py`) |
+| `tools/` | Developer utilities — executed directly, never imported by application code |
 | `data/raw/` | Raw, immutable source data — never modified |
 | `data/processed/` | Cleaned and transformed data |
 | `data/features/` | Feature-engineered datasets |
 | `notebooks/` | Exploratory analysis — not production code |
 | `models/` | Serialized model artifacts |
-| `tests/` | Pytest suite, mirrors `src/` hierarchy |
+| `tests/` | Pytest suite, mirrors `src/` and `tools/` hierarchy |
 | `.github/workflows/` | CI: lint + typecheck + test |
 
 ## Rules
 
 1. **UV only.** `uv add`, `uv sync`, `uv run` — never `pip install`.
 2. **No hardcoded secrets.** All config via `.env` + `src/config.py`.
-3. **Test parity.** Every `src/**/*.py` has a matching `tests/**/test_*.py`.
+3. **Test parity.** Every `src/**/*.py` and `tools/*.py` has a matching test file.
 4. **Lint must pass.** `ruff check` + `ruff format --check` before commit.
 5. **Standard library first.** Prefer stdlib over third-party packages.
 6. **`src/utils/` stays generic.** No project-specific logic in `m_*.py` files.

@@ -32,13 +32,7 @@ Copier will prompt for:
 - `description` — one-line project description
 - `variant` — `base`, `ml`, or `application`
 
-**3. Fill in your API key and variant-specific vars**
-```bash
-# In the generated project's .env
-AI_API_KEY=your-key-here
-```
-
-**4. Replace the logging stub**
+**3. Replace the logging stub**
 ```bash
 # Drop your m_log.py into src/utils/ — interface: f_log(), setup_logging(), f_log_execution()
 ```

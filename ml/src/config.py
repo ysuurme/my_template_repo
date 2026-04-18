@@ -12,10 +12,9 @@ class Settings(BaseSettings):
     log_line_width: int = 120
     log_dir: Path = Path("logs")
 
-    # AI
-    ai_provider: str = "anthropic"
-    ai_api_key: str = ""
-    ai_model: str = "claude-haiku-4-5-20251001"
+    # Google AI
+    google_api_key: str = ""
+    google_model: str = "gemini-2.0-flash"
 
     # ML
     mlflow_tracking_uri: str = "sqlite:///mlflow.db"

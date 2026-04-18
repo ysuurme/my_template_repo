@@ -31,14 +31,15 @@
 | `src/api/` | Route handlers and middleware |
 | `src/schemas/` | Pydantic request/response models |
 | `src/utils/` | Generic transferable modules (`m_*.py`) |
-| `tests/` | Pytest suite, mirrors `src/` hierarchy |
+| `tools/` | Developer utilities — executed directly, never imported by application code |
+| `tests/` | Pytest suite, mirrors `src/` and `tools/` hierarchy |
 | `.github/workflows/` | CI: lint + typecheck + test |
 
 ## Rules
 
 1. **UV only.** `uv add`, `uv sync`, `uv run` — never `pip install`.
 2. **No hardcoded secrets.** All config via `.env` + `src/config.py`.
-3. **Test parity.** Every `src/**/*.py` has a matching `tests/**/test_*.py`.
+3. **Test parity.** Every `src/**/*.py` and `tools/*.py` has a matching test file.
 4. **Lint must pass.** `ruff check` + `ruff format --check` before commit.
 5. **Standard library first.** Prefer stdlib over third-party packages.
 6. **`src/utils/` stays generic.** No project-specific logic in `m_*.py` files.

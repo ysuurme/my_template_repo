@@ -20,4 +20,4 @@ def reset_logging():
 def mock_settings(monkeypatch):
     """Override settings for tests — prevents reading .env from disk."""
     monkeypatch.setattr("src.config.settings.log_profile", "TEST")
-    monkeypatch.setattr("src.config.settings.ai_api_key", "test-key")
+    monkeypatch.setattr("src.config.settings.google_api_key", "test-key")
