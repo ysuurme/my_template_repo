@@ -107,3 +107,4 @@ Each variant contains a complete, self-contained scaffold. Shared files (logging
 - **Test parity**: every `src/**/*.py` gets a matching `tests/**/test_*.py`
 - **UV only**: `uv add`, `uv sync`, `uv run` — never `pip install`
 - **Shared file drift**: when updating a shared file (e.g. `m_log.py`), update it in all three variants
+- **Native Secret Management; uses local vault named 'LocalStore' for secret management
