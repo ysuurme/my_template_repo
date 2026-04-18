@@ -1,0 +1,22 @@
+project_name:
+    type: str
+    help: "Project name (hyphenated, e.g. my-new-project)"
+
+description:
+    type: str
+    help: "One-line project description"
+    default: "Add your description here"
+
+variant:
+    type: str
+    choices:
+        - base
+        - ml
+        - application
+    default: base
+    help: "Project variant — base (general), ml (machine learning), application (FastAPI service)"
+
+_subdirectory: "{{ variant }}"
+
+_tasks:
+    - "uv sync"
