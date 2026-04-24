@@ -120,16 +120,16 @@ Meta                        write-skills
 
 ---
 
-### `agentic-development`  ⚠️ PENDING USER INPUTS
+### `agentic-development`
 **Primary artifact:** Functioning agent (tool use, multi-agent coordination, structured outputs)
 
-**Owns:** Claude API usage patterns (tool use, structured outputs, streaming), agent loop design and state management, multi-agent coordination patterns, tool definition, validation, and error handling, context window and prompt management, agent testing patterns.
+**Owns:** Plan-Act-Observe loop design and state management, tool definition standard (Pydantic → JSON Schema), structured output enforcement (Pydantic + Correction Observation on parse failure), provider-agnostic action executor, multi-agent coordination (Orchestrator + Handoff patterns), context window management (sliding window, prompt caching), agent state persistence (Checkpointer: Firestore for prod, SQLite for dev), agent testing patterns.
 
-**Does not own:** General API development patterns (→ `application-development`), agent deployment infrastructure (→ `design-infrastructure`), data pipeline patterns used by agents (→ `data-engineering`), model serving infrastructure (→ `mlops`).
+**Does not own:** General API development patterns (→ `application-development`), agent deployment infrastructure and Firestore provisioning (→ `design-infrastructure`), Vertex AI Vector Search provisioning (→ `design-infrastructure`), data pipeline patterns used by agents (→ `data-engineering`), model serving infrastructure (→ `mlops`), telemetry instrumentation for agent spans (→ `observability`).
 
-**Interfaces with:** `application-development`, `design-infrastructure`, `git-workflow`.
+**Interfaces with:** `application-development`, `design-infrastructure`, `observability`, `git-workflow`.
 
-**Status:** Scope defined. Core Pattern, Quick Reference, Implementation, and Common Mistakes are [TODO] — awaiting user inputs on Claude API usage, tool use patterns, agent loop design, and multi-agent coordination preferences.
+**Primary compute:** Vertex AI / Google AI Studio (Gemini); Claude API maintained for parity. All patterns are provider-agnostic.
 
 ---
 
@@ -180,3 +180,8 @@ Shared concerns that appear across multiple domains. Ownership is fixed here to 
 | IAM server deployment | `design-infrastructure` | Keycloak and Zitadel server setup follows design-infrastructure container/IaC patterns |
 | GraphQL vs REST selection | `application-development` | GraphQL for query-heavy clients; REST for transactional APIs and prediction endpoints |
 | Foundational architectural patterns | `design-system` | Pipes & Filters (batch), Layers (service), Hub-and-Spoke (federated systems) |
+| Agent loop design and tool definitions | `agentic-development` | Pydantic → JSON Schema; provider-agnostic executor |
+| Agent state persistence logic | `agentic-development` | Checkpointer pattern; Firestore/SQLite backends |
+| Agent runtime deployment (Firestore, Vector Search provisioning) | `design-infrastructure` | Infrastructure follows general container/IaC patterns |
+| Agent loop OTel spans | `observability` | One span per iteration; agent-specific dashboards (Vertex AI Service Runtime / LangSmith) are visualisation alternatives |
+| Multi-agent coordination patterns | `agentic-development` | Orchestrator + Handoff (transfer_to_agent); sub-agent context must be self-contained |
