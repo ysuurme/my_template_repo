@@ -92,12 +92,52 @@ Exception: `requests` over `urllib` for HTTP calls. `numpy`/`pandas` for heavy a
 
 ## Implementation
 
+### Testing Strategy Taxonomy
+
+Choose the test type based on what you're building. This answers "what to test" — the TDD section below answers "how to test it".
+
+| Type | When | Key concern |
+|---|---|---|
+| UI | Dashboard or interactive app | End-user testing of interactive visualisations is expensive — limit to critical user journeys |
+| Contract | REST APIs, service-to-service | Consumer-driven: test what the consumer expects, not what the producer assumes (→ `application-development`) |
+| Integration | Data stores, ETL pipelines | Starting point for pipeline testing — check row counts, unique ID counts, min-max date ranges |
+| Unit | Custom utility functions, data processing logic | Do NOT write unit tests for standard library or ML framework calls — trust the library; test your own logic only |
+
+**ML-specific rule:** You should not need unit tests for calls into scikit-learn, XGBoost, PyTorch, or any well-tested ML framework. Write unit tests for your own data processing utilities, feature engineering functions, and validation logic.
+
+**ETL starting point:** Integration tests on pipeline outputs (does Silver have the expected row count? are all branch IDs present? does the date range span the expected quarters?) catch more real bugs than unit tests on transformation logic.
+
 ### TDD Enforcement
 
 Logic changes without a failing test first are an immediate rejection. No exceptions.
 
-- Runner: `pytest` — simple assert syntax, fixture injection
-- Mocking: `unittest.mock.MagicMock` — standard library only, no third-party mock alternatives
+**Runner selection — choose based on project scope:**
+
+| Context | Runner | Rationale |
+|---|---|---|
+| Simple scripts, utilities, learning context | `unittest` | Explicit class structure, no "magic" — every dependency is visible in the file. Hard to hide logic. Low setup overhead for isolated functions. |
+| Full applications, data/ML pipelines | `pytest` | Assertion introspection shows colored diffs on complex failures. `@pytest.mark.parametrize` tests one function against N data distributions in 3 lines vs 30. Fixtures eliminate repeated DB/session setup. |
+
+**Migration path for existing `unittest` projects:** `pytest` runs `unittest.TestCase` tests natively — switch the runner first (`uv run pytest`), keep existing tests untouched, write all new tests as plain functions with `assert`.
+
+**`pytest` fixture discipline:** Define shared fixtures (DB sessions, test data) in `conftest.py`. Always add a comment on the fixture pointing to its `conftest.py` location — "spooky action at a distance" is the most common junior confusion point.
+
+```python
+# ✅ pytest — parametrize for data/ML testing
+@pytest.mark.parametrize("input,expected", [
+    ({"period": "2024Q1", "value": 10.0}, True),
+    ({"period": "invalid",  "value": 10.0}, False),
+])
+def test_validate_record(input: dict, expected: bool) -> None:
+    assert validate_record(input) == expected
+
+# ✅ unittest — simple isolated function, no fixtures needed
+class TestCalculateScore(unittest.TestCase):
+    def test_returns_zero_for_empty_input(self) -> None:
+        self.assertEqual(calculate_score([]), 0)
+```
+
+**Mocking:** `unittest.mock.MagicMock` — standard library only, no third-party mock alternatives. Works identically in both runners.
 
 ### Communication Plan Gate
 

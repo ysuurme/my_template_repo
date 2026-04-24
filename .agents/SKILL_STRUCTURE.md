@@ -20,41 +20,22 @@ Meta                        write-skills
 ### `code-quality`
 **Primary artifact:** Reviewed, compliant Python code
 
-**Owns:**
-- Python syntax standards (PEP-8, type hints, naming)
-- Function and module structure (indentation limits, size limits, guard clauses)
-- TDD enforcement (pytest, mocking, failing test first)
-- Code review feedback format (Observation / Principle / Instruction / Reference)
-- Standard library vs third-party dependency decisions
+**Owns:** Python syntax standards (PEP-8, type hints, naming), function and module structure (indentation limits, size limits, guard clauses), TDD enforcement (pytest/unittest, mocking, failing test first), testing strategy taxonomy (UI / Contract / Integration / Unit), code review feedback format, standard library vs third-party dependency decisions.
 
-**Does not own:**
-- System or domain model design (→ `design-system`)
-- Domain-specific implementation patterns (→ domain skills)
-- Git operations or PR creation (→ `git-workflow`)
+**Does not own:** System or domain model design (→ `design-system`), domain-specific implementation patterns (→ domain skills), git operations or PR creation (→ `git-workflow`).
 
-**Interfaces with:**
-- `design-system` — architectural constraints define what code-quality enforces at the micro level
-- Domain skills — code-quality applies universally; domain skills define what is being built
+**Interfaces with:** `design-system` — architectural constraints propagate to code-level enforcement. Domain skills — code-quality applies universally.
 
 ---
 
 ### `git-workflow`
 **Primary artifact:** Linked branch → commit → PR tied to a GitHub Issue
 
-**Owns:**
-- Branch naming convention (`feature/issue-N`)
-- Commit message format (`feat(#N): Title`)
-- PR creation with issue auto-close (`Closes #N`)
-- Error handling for git/gh commands
-- Agent-driven automation of the full branch → PR flow
+**Owns:** Branch naming (`feature/issue-N`), commit message format (`feat(#N): Title`), PR creation with issue auto-close (`Closes #N`), error handling for git/gh commands, agent-driven automation of the full branch → PR flow.
 
-**Does not own:**
-- CI/CD pipeline configuration (→ `design-infrastructure`)
-- Code review standards (→ `code-quality`)
-- Repository or branching strategy design
+**Does not own:** CI/CD pipeline configuration (→ `design-infrastructure`), code review standards (→ `code-quality`).
 
-**Interfaces with:**
-- `design-infrastructure` — CI/CD runs on the branches and PRs this skill creates
+**Interfaces with:** `design-infrastructure` — CI/CD runs on the branches and PRs this skill creates.
 
 ---
 
@@ -63,189 +44,92 @@ Meta                        write-skills
 ### `design-system`
 **Primary artifact:** Domain model with defined boundaries and dependency rules
 
-**Owns:**
-- Domain model design (entities, value objects, aggregates)
-- Bounded context definition and anti-corruption layers
-- Dependency direction rules (hexagonal / clean architecture)
-- Port and adapter interface definitions
-- Architectural drift detection
+**Owns:** Domain model design (entities, value objects, aggregates), bounded context definition and anti-corruption layers, dependency direction rules (hexagonal / clean architecture), port and adapter interface definitions, architectural drift detection, foundational data & AI system patterns (Pipes & Filters, Layers, Hub-and-Spoke).
 
-**Does not own:**
-- Container or cloud resource configuration (→ `design-infrastructure`)
-- Telemetry instrumentation (→ `observability`)
-- Code-level quality rules (→ `code-quality`)
-- Domain-specific implementation patterns (→ domain skills)
+**Does not own:** Container or cloud resource configuration (→ `design-infrastructure`), telemetry instrumentation (→ `observability`), code-level quality rules (→ `code-quality`), domain-specific implementation patterns (→ domain skills).
 
-**Interfaces with:**
-- `design-infrastructure` — system boundaries define what infrastructure must isolate
-- `code-quality` — architectural constraints propagate down to code-level enforcement
-- Domain skills — domain models defined here are implemented in domain skills
+**Interfaces with:** `design-infrastructure`, `code-quality`, domain skills.
 
 ---
 
 ### `design-infrastructure`
 **Primary artifact:** Deployable, secure execution environment (containers, IaC, CI/CD)
 
-**Owns:**
-- Dockerfile construction and optimization (multi-stage, rootless, health checks)
-- Terraform module structure and remote state management
-- CI/CD pipeline configuration
-- Azure and GCP identity, networking, and secrets management standards
-- Multi-cloud placement decisions (Azure default, GCP for ML/BigQuery environments)
+**Owns:** Dockerfile construction (multi-stage, rootless, health checks), Terraform module structure and remote state management, CI/CD pipeline configuration (including ML pipeline CI/CD), Azure and GCP identity/networking/secrets standards, multi-cloud placement decisions (Azure default, GCP for ML/BigQuery), Traefik reverse proxy for self-managed container environments, Marquez server deployment, IAM server deployment (Keycloak, Zitadel).
 
-**Does not own:**
-- Application domain modeling (→ `design-system`)
-- Telemetry SDK instrumentation (→ `observability`)
-- Domain-specific deployment patterns (→ domain skills where relevant)
+**Does not own:** Application domain modelling (→ `design-system`), telemetry SDK instrumentation (→ `observability`), model serving infrastructure (→ `mlops`).
 
-**Interfaces with:**
-- `design-system` — system boundary design informs network isolation and identity scope
-- `observability` — infrastructure routes and stores telemetry; SDK instrumentation lives in observability
-- `mlops` — model serving infrastructure is owned by mlops, general container patterns live here
+**Interfaces with:** `design-system`, `observability`, `mlops`.
 
 ---
 
 ### `observability`
 **Primary artifact:** Instrumented system emitting correlated logs, traces, and metrics
 
-**Owns:**
-- OpenTelemetry SDK setup and configuration
-- Structured logging standards and field conventions
-- Trace and span instrumentation patterns
-- Metrics collection and naming conventions
-- Log-trace-metric correlation patterns
+**Owns:** OpenTelemetry SDK setup and configuration, structured logging standards and field conventions, trace and span instrumentation patterns, metrics collection and naming conventions, log-trace-metric correlation, OpenLineage instrumentation pattern (how to emit lineage events — not the Marquez deployment or pipeline emission logic).
 
-**Does not own:**
-- Log storage, routing, or alerting infrastructure (→ `design-infrastructure`)
-- Business metric definitions — these are defined in domain skills, instrumented here
-- Model performance monitoring and drift metrics (→ `mlops`)
+**Does not own:** Log storage, routing, or alerting infrastructure (→ `design-infrastructure`), business metric definitions (defined in domain skills, instrumented here), model performance thresholds and drift trigger logic (→ `mlops`), OpenLineage event emission from pipeline steps (→ `data-engineering`), Marquez server deployment (→ `design-infrastructure`).
 
-**Interfaces with:**
-- `design-infrastructure` — observability defines what to emit; infrastructure defines where it goes
-- `mlops` — model metrics and drift monitoring are owned by mlops; general trace instrumentation lives here
+**Interfaces with:** `design-infrastructure`, `mlops`, `data-engineering`.
 
 ---
 
 ## Layer 3 — Domain Build
 
 ### `data-engineering`
-**Primary artifact:** Validated, reliable datasets and feature tables
+**Primary artifact:** Validated, ML-ready datasets and feature tables
 
-**Owns:**
-- ETL/ELT pipeline design and implementation
-- Orchestration tooling (scheduling, DAGs, dependencies, retries)
-- Storage layer management (data warehouse, data lake, lakehouse)
-- Data quality gates and schema validation
-- Medallion architecture (Bronze / Silver / Gold)
-- Feature pipeline *implementation* (computing features reliably at scale)
+**Owns:** ELT pipeline design and implementation (Raw → Bronze → Silver → Gold Medallion), SQLAlchemy Core (Bronze bulk inserts) and ORM (Silver/Gold), SQLModel for unified Pydantic + SQLAlchemy models, Pydantic boundary validation (Sandwich pattern), Polars for pipeline data transformations (single-machine), PySpark for distributed pipeline transformations, DuckDB query engine, DuckLake storage backend (PostgreSQL catalog + Parquet), data quality gates and schema validation, feature pipeline *implementation* (computing features at scale), OpenLineage event emission from pipeline steps, Dagster Software-Defined Assets (optional, mature setup), integration testing for ETL outputs (row counts, unique IDs, date ranges).
 
-**Does not own:**
-- Feature *design* — which features to compute (→ `data-science`)
-- Feature *serving* at inference time (→ `mlops`)
-- Model training pipelines (→ `mlops`)
-- Statistical analysis or EDA (→ `data-science`)
+**Does not own:** Feature *design* — which features to compute (→ `data-science`), feature *serving* at inference time (→ `mlops`), model training pipelines (→ `mlops`), statistical analysis or EDA (→ `data-science`), Marquez server deployment (→ `design-infrastructure`).
 
-**Interfaces with:**
-- `data-science` — data-science designs features; data-engineering implements the pipeline
-- `mlops` — data-engineering produces training datasets; mlops consumes them for training pipelines
-- `design-system` — Medallion layers map to domain trust tiers defined in design-system
-- `design-infrastructure` — pipeline execution environments are owned by design-infrastructure
+**Interfaces with:** `data-science`, `mlops`, `design-system`, `design-infrastructure`, `observability`.
 
 ---
 
 ### `data-science`
 **Primary artifact:** Model prototypes, evaluation results, and analytical insights
 
-**Owns:**
-- Exploratory data analysis (EDA)
-- Feature selection and design (deciding what to compute, not how to compute it at scale)
-- Model prototyping and evaluation
-- Statistical analysis and hypothesis testing
-- Notebook-to-module refactoring patterns
-- Experiment tracking *usage* — running experiments, logging metrics, comparing runs
+**Owns:** Exploratory data analysis (EDA), feature selection and design (deciding what to compute, not how to compute it at scale), model prototyping and evaluation, statistical analysis and hypothesis testing, Marimo notebooks (default format — `.py`, reactive, agent-readable), Pandas for EDA/prototyping (single-machine default), notebook-to-module refactoring patterns, experiment tracking *usage* (running experiments, logging metrics, comparing runs).
 
-**Does not own:**
-- Feature pipeline *implementation* at scale (→ `data-engineering`)
-- Production model deployment or serving (→ `mlops`)
-- Experiment tracking *infrastructure* — registry setup, model promotion gates (→ `mlops`)
-- Data pipeline orchestration (→ `data-engineering`)
+**Does not own:** Feature pipeline *implementation* at scale (→ `data-engineering`), production model deployment or serving (→ `mlops`), experiment tracking *infrastructure* (→ `mlops`), data pipeline orchestration (→ `data-engineering`).
 
-**Interfaces with:**
-- `data-engineering` — data-science defines features; data-engineering builds the production pipeline
-- `mlops` — data-science produces model artifacts and evaluation results; mlops operationalizes them
-- `code-quality` — notebook-to-module refactoring is enforced by code-quality standards
+**Interfaces with:** `data-engineering`, `mlops`, `code-quality`.
 
 ---
 
 ### `mlops`
 **Primary artifact:** Production ML system (training pipeline, serving endpoint, monitoring)
 
-**Owns:**
-- Production training pipeline design and automation
-- Model registry, versioning, and promotion gates (experiment → staging → production)
-- Model serving and inference infrastructure
-- Feature store serving (delivering features to models at inference time)
-- Model monitoring, drift detection, and retraining triggers
-- Experiment tracking *infrastructure* — MLflow setup, registry configuration
+**Owns:** Production training pipeline design and automation (Google MLOps Level 1 target), model registry, versioning, and promotion gates (experiment → staging → production), model serving and inference infrastructure, ONNX as standard model serialisation format, MLflow infrastructure (remote tracking server, model registry), feature store serving, model monitoring, drift detection, and retraining triggers, data/model validation *gates* (automated pipeline stop/continue decisions), ML metadata management (lineage, artifact pointers, reproducibility), pipeline triggers (scheduled, on new data, on degradation, on drift).
 
-**Does not own:**
-- Raw data pipeline management (→ `data-engineering`)
-- Model prototyping or experimentation (→ `data-science`)
-- General container and cloud infrastructure primitives (→ `design-infrastructure`)
-- General telemetry instrumentation (→ `observability`)
+**Does not own:** Raw data pipeline management (→ `data-engineering`), model prototyping (→ `data-science`), general container and cloud infrastructure primitives (→ `design-infrastructure`), data validation *implementation* — schema enforcement, Pydantic models (→ `data-engineering`), general telemetry instrumentation (→ `observability`).
 
-**Interfaces with:**
-- `data-engineering` — mlops consumes datasets and feature tables produced by data-engineering
-- `data-science` — mlops operationalizes model artifacts and evaluation results from data-science
-- `design-infrastructure` — serving infrastructure follows general container/cloud patterns from design-infrastructure
-- `observability` — model metrics are defined here; trace instrumentation patterns come from observability
+**Interfaces with:** `data-engineering`, `data-science`, `design-infrastructure`, `observability`.
 
 ---
 
 ### `application-development`
 **Primary artifact:** Production API or service
 
-**Owns:**
-- API design patterns (REST, request/response contracts, versioning)
-- Input validation and serialization
-- Authentication and authorization patterns
-- Background task patterns
-- Service-to-service communication
-- API documentation standards
+**Owns:** REST API design (FastAPI, Pydantic-native, auto OpenAPI), GraphQL Query API (Strawberry + FastAPI), input validation and serialisation (Pydantic / SQLModel), authentication and authorisation patterns, IAM backend selection (Keycloak for internal employees, Zitadel for B2B SaaS tenants), background task patterns, service-to-service communication, contract testing for REST and GraphQL APIs.
 
-**Does not own:**
-- Domain modeling (→ `design-system`)
-- Infrastructure and deployment (→ `design-infrastructure`)
-- Agent-specific API patterns (→ `agentic-development`)
+**Does not own:** Domain modelling (→ `design-system`), infrastructure and deployment (→ `design-infrastructure`), agent-specific API patterns (→ `agentic-development`), model serving infrastructure (→ `mlops`), IAM server deployment (→ `design-infrastructure`).
 
-**Interfaces with:**
-- `design-system` — application layer implements ports defined in design-system
-- `design-infrastructure` — application deployment environment is owned by design-infrastructure
-- `agentic-development` — agents may call application APIs; agent-specific patterns live in agentic-development
+**Interfaces with:** `design-system`, `design-infrastructure`, `agentic-development`.
 
 ---
 
-### `agentic-development`
+### `agentic-development`  ⚠️ PENDING USER INPUTS
 **Primary artifact:** Functioning agent (tool use, multi-agent coordination, structured outputs)
 
-**Owns:**
-- Claude API usage patterns (tool use, structured outputs, streaming)
-- Agent loop design and state management
-- Multi-agent coordination patterns
-- Tool definition, validation, and error handling
-- Context window and prompt management
-- Agent testing patterns
+**Owns:** Claude API usage patterns (tool use, structured outputs, streaming), agent loop design and state management, multi-agent coordination patterns, tool definition, validation, and error handling, context window and prompt management, agent testing patterns.
 
-**Does not own:**
-- General API development patterns (→ `application-development`)
-- Agent deployment infrastructure (→ `design-infrastructure`)
-- Data pipeline patterns used by agents (→ `data-engineering`)
-- Model serving infrastructure (→ `mlops`)
+**Does not own:** General API development patterns (→ `application-development`), agent deployment infrastructure (→ `design-infrastructure`), data pipeline patterns used by agents (→ `data-engineering`), model serving infrastructure (→ `mlops`).
 
-**Interfaces with:**
-- `application-development` — agents often expose or consume APIs; general API patterns live there
-- `design-infrastructure` — agent runtime deployment follows general container/cloud patterns
-- `git-workflow` — agent-driven git automation uses the patterns defined in git-workflow
+**Interfaces with:** `application-development`, `design-infrastructure`, `git-workflow`.
+
+**Status:** Scope defined. Core Pattern, Quick Reference, Implementation, and Common Mistakes are [TODO] — awaiting user inputs on Claude API usage, tool use patterns, agent loop design, and multi-agent coordination preferences.
 
 ---
 
@@ -254,16 +138,9 @@ Meta                        write-skills
 ### `write-skills`
 **Primary artifact:** Valid, MECE-compliant SKILL.md
 
-**Owns:**
-- Skill creation standards and SKILL.md template
-- Validation process (baseline → draft → verify)
-- MECE enforcement and split detection
-- Routing signal format
-- ASO (Agent Search Optimization) rules
+**Owns:** Skill creation standards and SKILL.md template, validation process (baseline → draft → verify), MECE enforcement and split detection, routing signal format, ASO (Agent Search Optimization) rules.
 
-**Does not own:**
-- Project-specific agent instructions (→ `CLAUDE.md` / `AGENT.md`)
-- Individual skill content
+**Does not own:** Project-specific agent instructions (→ `CLAUDE.md` / `AGENT.md`), individual skill content.
 
 **Interfaces with:** All other skills — defines the contract every skill must follow.
 
@@ -271,20 +148,35 @@ Meta                        write-skills
 
 ## Explicit Boundary Rules
 
-These shared concerns appear in multiple domains. Ownership is fixed here.
+Shared concerns that appear across multiple domains. Ownership is fixed here to prevent duplication.
 
 | Concern | Owner | Notes |
 |---|---|---|
 | Feature design (what to compute) | `data-science` | |
-| Feature pipeline (computing it at scale) | `data-engineering` | |
+| Feature pipeline (computing at scale) | `data-engineering` | |
 | Feature serving (at inference time) | `mlops` | |
 | Experiment tracking usage (running experiments) | `data-science` | |
 | Experiment tracking infrastructure (MLflow setup, registry) | `mlops` | |
 | Model evaluation during prototyping | `data-science` | |
 | Model promotion gates (staging → production) | `mlops` | |
-| Training data pipeline | `data-engineering` | It's a pipeline; model training itself is mlops |
-| Batch inference pipeline | `mlops` | It executes a model; data movement patterns from data-engineering apply |
+| Training data pipeline | `data-engineering` | It's a pipeline; model training is mlops |
+| Batch inference pipeline | `mlops` | Executes a model; data movement patterns from data-engineering apply |
 | Container and cloud primitives | `design-infrastructure` | |
-| Model serving infrastructure | `mlops` | Specialised enough to own it; general container patterns from design-infrastructure |
-| Business metric definitions | Domain skill that owns the domain | Instrumentation pattern comes from observability |
+| Model serving infrastructure | `mlops` | General container patterns from design-infrastructure |
+| Business metric definitions | Domain skill that owns the domain | Instrumentation pattern from observability |
 | Telemetry SDK instrumentation | `observability` | Routing/storage infrastructure from design-infrastructure |
+| Pipeline data transformation (single-machine) | `data-engineering` | Polars — must-have; never Pandas in pipelines |
+| Pipeline data transformation (distributed) | `data-engineering` | PySpark — optional; adopt when data exceeds single-machine capacity |
+| EDA / notebook data processing | `data-science` | Pandas default; switch to Polars only when Pandas is a memory/speed bottleneck |
+| Polars ↔ Pandas bridge | Boundary only | `df.to_pandas()` acceptable solely when a downstream library strictly requires `pd.DataFrame` |
+| Storage backend selection | `data-engineering` | SQLite for local/prototype; DuckLake (PostgreSQL catalog + Parquet + DuckDB) for production scale |
+| DuckLake query access from notebooks | `data-science` | Reading Gold via DuckDB in Marimo; setup and config live in data-engineering |
+| OpenLineage event emission | `data-engineering` | Emit per Medallion tier; instrumentation pattern defined in observability |
+| OpenLineage instrumentation pattern | `observability` | How to emit events; emission logic in data-engineering; Marquez deployment in design-infrastructure |
+| Pipeline orchestration (mature, SDA) | `data-engineering` | Dagster — optional; for multi-pipeline production with built-in lineage and scheduling |
+| Pipeline orchestration (multi-system) | `data-engineering` + `design-infrastructure` | Airflow — optional; DAG logic in data-engineering, server deployment in design-infrastructure |
+| IAM backend — internal employees | `application-development` | Keycloak — LDAP/AD, corporate network, legacy protocol support |
+| IAM backend — B2B SaaS tenants | `application-development` | Zitadel — cloud-native, multi-tenant organisations, event-sourced audit trail |
+| IAM server deployment | `design-infrastructure` | Keycloak and Zitadel server setup follows design-infrastructure container/IaC patterns |
+| GraphQL vs REST selection | `application-development` | GraphQL for query-heavy clients; REST for transactional APIs and prediction endpoints |
+| Foundational architectural patterns | `design-system` | Pipes & Filters (batch), Layers (service), Hub-and-Spoke (federated systems) |

@@ -78,6 +78,28 @@ Governs the execution environment, delivery mechanism, and cloud orchestration o
 | Orchestration | K8s Deployment | AKS | GKE |
 | IaC State | Remote Locked Backend | Blob Container | GCS Bucket |
 | CI/CD Drift | Scheduled Plan Runs | Exit Code 2 → Alert | Exit Code 2 → Alert |
+| Reverse Proxy (self-managed) | Traefik | AKS Ingress | GKE Ingress |
+| Reverse Proxy (cloud-native) | Cloud Load Balancer | Azure Front Door / App Gateway | Cloud Load Balancing |
+
+### Traefik — Cloud-Native Reverse Proxy (Optional)
+
+Traefik is the preferred reverse proxy for self-managed container environments (Kubernetes, Docker Compose). It auto-discovers services via Docker/Kubernetes labels, eliminating manual routing configuration. Built-in Let's Encrypt integration handles TLS certificate lifecycle automatically.
+
+Use Traefik when: running self-managed containers (AKS, GKE, Docker Compose) and service routing complexity justifies a dedicated proxy. Use cloud-native load balancers (Azure Front Door, GCP Cloud Load Balancing) when using managed PaaS services where cloud routing is provided.
+
+```yaml
+# docker-compose.yml — Traefik auto-discovery via labels
+services:
+  api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.example.com`)"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+```
+
+### ML Pipeline CI/CD
+
+ML training pipeline CI/CD is a first-class concern alongside application CI/CD. A pipeline CI stage must: (1) build and test each containerised pipeline component using the same multi-stage, rootless, `HEALTHCHECK` Docker standards as any other container; (2) run an end-to-end smoke test of the assembled pipeline on a small sample dataset; (3) deploy the validated pipeline definition to the target orchestrator (e.g. Vertex AI Pipelines on GCP). Model validation logic, promotion gates, and retraining triggers are owned by `mlops`; only the build, test, and deploy infrastructure lives here.
 
 ## Implementation
 

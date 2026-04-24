@@ -34,6 +34,22 @@ Enforces Domain-Driven Design and Hexagonal Architecture to keep business logic 
 
 ## Core Pattern
 
+### Foundational Patterns for Data & AI Systems
+
+Three structural patterns from Buschmann et al. (2013) underpin the architecture of data and AI systems. Select the pattern that matches the topology of the system being designed.
+
+| Pattern | Use when | Implementation |
+|---|---|---|
+| **Pipes and Filters** | Batch data processing — data flows sequentially through independent transformation stages | Medallion architecture (Raw → Bronze → Silver → Gold); each tier is a filter, the pipeline is the pipe |
+| **Layers** | Achieving interoperability across tiers with different trust levels and transformation concerns | Domain trust tiering (Raw = untrusted, Gold = invariant-enforced); Hexagonal Architecture (Domain / Application / Infrastructure) |
+| **Hub-and-Spoke (Event Broker)** | Federated data systems — multiple producers and consumers decoupled via a central event broker | Azure Service Bus / GCP Pub/Sub as the hub; microservices, pipelines, and ML systems as spokes |
+
+**Pipes and Filters** is the primary pattern for all batch data pipelines. Each Medallion tier is a filter (validates and transforms its input, produces clean output); the tier boundary is the pipe (contracts enforce what passes through).
+
+**Layers** is the primary pattern for the application architecture within a service. Domain core, application layer, and infrastructure layer are strict layers — dependencies flow inward only.
+
+**Hub-and-Spoke** applies when the system grows beyond a single pipeline into a federated architecture — multiple data sources, consumers, and ML systems communicating asynchronously. The event broker (Service Bus, Pub/Sub, Kafka) is the hub; each pipeline or service is a spoke.
+
 ### Maker/Checker Loop
 
 Execute before finalising any structural proposal:
