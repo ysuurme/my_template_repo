@@ -1,5 +1,6 @@
 [project]
-name = "my-template-repo"
+name = "agentic-sdlc"
+description = "Python Copier template for a fully agentic software development life cycle. Your idea's in, merged Pull Requests out. AI Engineering project scaffold."
 version = "0.1.1"
 requires-python = "==3.14.*"
 dependencies = [

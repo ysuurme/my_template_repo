@@ -19,7 +19,7 @@ a refactor, a worktree-isolated sub-fix. The branch prefix no longer encodes the
 change; the commit type (`feat`, `fix`, `docs`, `refactor`, …) already does that, and the
 orchestrator (`Complete-HeldPR`, `Get-CurrentIssueNumber`, the `afk.yml` `pull_request:
 closed` trigger) matches on `feature/` alone. A second prefix is a branch the pipeline
-cannot see — see [#252](https://github.com/ysuurme/my_template_repo/issues/252), where a
+cannot see — see [#252](https://github.com/architecture-that-works/agentic-sdlc/issues/252), where a
 `fix/`-prefixed PR merged clean but never reconciled its issue's label.
 
 | Segment | Rule | Example |

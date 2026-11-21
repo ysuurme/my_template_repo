@@ -78,7 +78,7 @@ def test_answer_check_records_answers_and_follow_ups() -> None:
         _ANSWER_FAKES
         + r"""
 function script:Get-OwnerComments { param($IssueNumber, $Since)
-    @([pscustomobject]@{ login = 'ysuurme'; created_at = '2026-09-23T11:00:00Z'; body = '1 allowlist. 2 not sure yet' }) }
+    @([pscustomobject]@{ login = 'octocat'; created_at = '2026-09-23T11:00:00Z'; body = '1 allowlist. 2 not sure yet' }) }
 function script:claude { $script:ModelCalls++; $global:LASTEXITCODE = 0
     '{"answers":[{"id":1,"status":"answered","decision":"Use an allowlist."},{"id":2,"status":"open","follow_up":"Config.ps1 or settings.json?"}],"new_questions":[{"text":"Include docs/?","recommendation":"yes"}]}' }
 $r = Invoke-AnswerCheck -IssueNumber 50
@@ -94,7 +94,7 @@ $r = Invoke-AnswerCheck -IssueNumber 50
     assert (out["answered"], out["open"], out["calls"]) == (1, 2, 1)
     assert out["decided"] == [
         "earlier|kept|",
-        "Allowlist or denylist?|Use an allowlist.|ysuurme",
+        "Allowlist or denylist?|Use an allowlist.|octocat",
     ]
     assert out["still"] == [
         "Where does it live?|Config.ps1 or settings.json?",
@@ -122,7 +122,7 @@ def test_answer_check_reports_an_unusable_model_reply() -> None:
         _ANSWER_FAKES
         + r"""
 function script:Get-OwnerComments { param($IssueNumber, $Since)
-    @([pscustomobject]@{ login = 'ysuurme'; created_at = 'x'; body = 'ok' }) }
+    @([pscustomobject]@{ login = 'octocat'; created_at = 'x'; body = 'ok' }) }
 function script:claude { $global:LASTEXITCODE = 0; 'I think so?' }
 $r = Invoke-AnswerCheck -IssueNumber 50
 [pscustomobject]@{ error = [bool]$r.Error; written = ($null -ne $script:Written) } | ConvertTo-Json -Compress
@@ -220,7 +220,7 @@ def test_decision_section_lists_options_and_decided() -> None:
 function script:Set-IssueBodySection { param($IssueNumber, $BeginMarker, $EndMarker, $Markdown) $script:Md = $Markdown; $true }
 $state = [pscustomobject]@{
     open_questions    = @([pscustomobject]@{ text = 'Q1?'; decision = 'rec'; alternatives = @('alt b', 'alt c'); follow_up = 'which one?' })
-    decided_questions = @([pscustomobject]@{ text = 'Q0?'; decision = 'yes'; decided_by = 'ysuurme' })
+    decided_questions = @([pscustomobject]@{ text = 'Q0?'; decision = 'yes'; decided_by = 'octocat' })
 }
 Set-DecisionSection -IssueNumber 1 -State $state
 [pscustomobject]@{ md = $script:Md } | ConvertTo-Json -Compress
@@ -235,7 +235,7 @@ Set-DecisionSection -IssueNumber 1 -State $state
         "- **C:** alt c",
         "- **Other:** your own answer",
         "- _Still needed:_ which one?",
-        "- Q0? → yes _(ysuurme)_",
+        "- Q0? → yes _(octocat)_",
     ):
         assert line in md, line
     assert "`ok` — accept every recommendation" in md

@@ -90,7 +90,7 @@ gh pr comment <PR_NUMBER> --body "$(cat docs/arch/blast-radius.md)"
 ### Step 7 — GitHub Issue cross-reference
 
 ```bash
-gh search issues --repo ysuurme/my_template_repo "streaming SSE" \
+gh search issues --repo <owner>/<repo> "streaming SSE" \
   --json number,title,state \
   | jq '.[] | "#\(.number): \(.title) [\(.state)]"'
 # → (no overlapping open issues found)

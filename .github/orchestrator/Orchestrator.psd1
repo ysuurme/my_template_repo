@@ -2,7 +2,7 @@
     RootModule        = 'Orchestrator.psm1'
     ModuleVersion     = '2.0.0'
     GUID              = '7b976e4f-53df-487d-ab4c-1bd36d42699e'
-    Author            = 'my_template_repo'
+    Author            = 'agentic-sdlc'
     Description       = 'Agentic pipeline orchestrator: refine -> architect -> plan -> implement -> review -> ship. Run parameters flow via the KANBAN_* env transport and Get-OrchestratorContext (ADR-013, ADR-015).'
     PowerShellVersion = '7.0'
 

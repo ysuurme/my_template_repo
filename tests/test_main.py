@@ -26,7 +26,7 @@ def test_root_returns_200_with_name(live_server: tuple[HTTPServer, int]) -> None
     with urlopen(f"http://127.0.0.1:{port}/") as resp:
         assert resp.status == 200
         body = resp.read().decode()
-    assert "my-template-repo" in body
+    assert "agentic-sdlc" in body
 
 
 def test_healthz_returns_ok(live_server: tuple[HTTPServer, int]) -> None:
@@ -52,5 +52,5 @@ def test_identity_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr(src.main, "metadata", raise_not_found)
     name, version = src.main._identity()
-    assert name == "my-template-repo"
+    assert name == "agentic-sdlc"
     assert version.startswith("v")

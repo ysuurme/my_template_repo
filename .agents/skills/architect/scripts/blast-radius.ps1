@@ -31,7 +31,7 @@
     If set, posts the blast-radius report as a PR comment via `gh pr comment`.
 
 .NOTES
-    Phase 2 implementation tracked in: https://github.com/ysuurme/my_template_repo/issues/3
+    Phase 2 implementation tracked in: https://github.com/architecture-that-works/agentic-sdlc/issues/3
     This stub satisfies the skill directory shape required by rubric criterion 3.7.
 #>
 

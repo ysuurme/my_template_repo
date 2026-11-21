@@ -18,7 +18,7 @@
         5. Smallest complete scope — the core job; everything else goes to out_of_scope
 
 .NOTES
-    Tracked in: https://github.com/ysuurme/my_template_repo/issues/85
+    Tracked in: https://github.com/architecture-that-works/agentic-sdlc/issues/85
     Schema:    src/utils/m_planning.py::GrillResult
     Skill:     .agents/skills/refine/SKILL.md § AFK invocation pattern
 #>

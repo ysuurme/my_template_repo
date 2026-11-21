@@ -1,4 +1,6 @@
-# python-uv-template
+# agentic-sdlc
+
+Python Copier template for a fully agentic software development life cycle. Your idea's in, merged Pull Requests out. AI Engineering project scaffold.
 
 Copier-based Python 3.14 + UV project scaffold with typed config, structured logging, test
 parity, GitHub Actions CI, and an agentic pipeline that takes a GitHub issue from idea to merged
@@ -20,7 +22,7 @@ Prerequisites: [uv](https://docs.astral.sh/uv/), [Task](https://taskfile.dev),
 PowerShell 7+, and the GitHub CLI (`gh`).
 
 ```bash
-uvx copier copy gh:your-username/my_template_repo path/to/new-project
+uvx copier copy gh:architecture-that-works/agentic-sdlc path/to/new-project
 ```
 
 Copier prompts for `project_name`, `description`, and `project_type` (`application` — the

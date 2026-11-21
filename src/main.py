@@ -8,10 +8,10 @@ from src.utils.m_log import f_log, setup_logging
 
 def _identity() -> tuple[str, str]:
     try:
-        meta = metadata("my-template-repo")
+        meta = metadata("agentic-sdlc")
         return meta["Name"], f"v{meta['Version']}"
     except PackageNotFoundError:
-        return "my-template-repo", "v0.0.0"
+        return "agentic-sdlc", "v0.0.0"
 
 
 class HelloHandler(BaseHTTPRequestHandler):

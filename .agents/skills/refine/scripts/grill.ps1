@@ -57,7 +57,7 @@
     subagent called, in order. The refine eval (tests/evals) checks Rule 1 with it.
 
 .NOTES
-    Tracked in: https://github.com/ysuurme/my_template_repo/issues/85
+    Tracked in: https://github.com/architecture-that-works/agentic-sdlc/issues/85
     Schema:    src/utils/m_planning.py::GrillResult
     Skill:     .agents/skills/refine/SKILL.md § Unattended invocation pattern
     Library:   .github/orchestrator/lib/Grill.ps1 (Invoke-Grill + helpers) — the module dot-sources it.

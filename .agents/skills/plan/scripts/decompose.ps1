@@ -33,7 +33,7 @@
     If set, creates GitHub Issues for each decomposed item after manifest review.
 
 .NOTES
-    Phase 2 implementation tracked in: https://github.com/ysuurme/my_template_repo/issues/9
+    Phase 2 implementation tracked in: https://github.com/architecture-that-works/agentic-sdlc/issues/9
     This stub satisfies the skill directory shape required by rubric criterion 3.7.
 #>
 
